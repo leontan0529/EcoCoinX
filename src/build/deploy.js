@@ -1,35 +1,19 @@
-// Initialize Web3 with your Ethereum provider (e.g., Infura or local node)
-const web3 = new Web3('YOUR_ETHEREUM_PROVIDER');
+const Web3 = require('web3');
+const HDWalletProvider = require('truffle-hdwallet-provider');
+const { abi, evm } = require('./EcoCoin/EcoCoin.json'); // Replace with the path to your contract JSON file
 
-// ABI and bytecode of a simple Carbon contract (use the real contract ABI and bytecode)
-const contractABI = []; // Replace with your contract's ABI
-const contractBytecode = '0x...'; // Replace with your contract's bytecode
+const provider = new HDWalletProvider('YOUR_MNEMONIC', 'YOUR_INFURA_URL'); // Replace with your mnemonic and Infura URL
+const web3 = new Web3(provider);
 
-// Deploy the carbon contract
-app.get('/deploy-contract', async (req, res) => {
-  try {
-    // Use a valid Ethereum address from your wallet
-    const senderAddress = 'YOUR_WALLET_ADDRESS';
+const deploy = async () => {
+    const accounts = await web3.eth.getAccounts();
+    console.log('Deploying from account', accounts[0]);
 
-    // Create a new contract instance
-    const contract = new web3.eth.Contract(contractABI);
+    const result = await new web3.eth.Contract(abi)
+        .deploy({ data: evm.bytecode.object })
+        .send({ from: accounts[0], gas: '3000000' });
 
-    // Estimate gas required for deployment
-    const gas = await contract.deploy({
-      data: contractBytecode,
-    }).estimateGas();
+    console.log('Contract deployed to', result.options.address);
+};
 
-    // Deploy the contract
-    const deployedContract = await contract.deploy({
-      data: contractBytecode,
-    }).send({
-      from: senderAddress,
-      gas,
-    });
-
-    res.json({ contractAddress: deployedContract.options.address });
-  } catch (error) {
-    console.error('Error deploying contract:', error);
-    res.status(500).json({ error: 'Error deploying contract' });
-  }
-});
+deploy();

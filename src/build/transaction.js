@@ -20,9 +20,9 @@ app.get('/buy-contracts', async (req, res) => {
     const contractInstance = await contract.deployed();
     
     // Perform the contract interaction to buy carbon contracts
-    const amountInEther = 1;  // Specify the amount of Ether to send
+    const amountInEcoCoin = 1;  // Specify the amount of EcoCoin to send, assuming users have loaded EcoCoin into their Ethereum wallet
     try {
-      const result = await contractInstance.buyCarbonContracts({ from: userAddress, value: web3.utils.toWei(amountInEther.toString(), 'ether') });
+      const result = await contractInstance.buyCarbonContracts({ from: userAddress, value: web3.utils.toWei(amountInEcoCoin.toString(), 'EcoCoin') });
       res.send('Carbon contracts purchased successfully. Transaction hash: ' + result.tx);
     } catch (error) {
       res.status(500).send('Error: ' + error.message);
