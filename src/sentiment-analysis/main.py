@@ -24,7 +24,7 @@ class SentimentAnalysis:
         NoOfTerms = int(input("Enter how many tweets to search: "))
 
         # searching for tweets
-        self.tweets = tweepy.Cursor(api.search, q=searchTerm, lang = "en").items(NoOfTerms)
+        self.tweets = tweepy.Cursor(api.search_tweets, q=searchTerm, lang = "en").items(NoOfTerms)
 
         # Open/create a file to append data to
         csvFile = open('result.csv', 'a')
